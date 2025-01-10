@@ -441,6 +441,24 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
       assert page.total_pages == 1
     end
 
+    test "pagination plays nice with distinct when selecting a map with a struct value" do
+      create_posts()
+
+      query =
+        from(post in Post,
+          distinct: post.id,
+          select: %{post: post}
+        )
+
+      page = Scrivener.Ecto.Repo.paginate(query)
+
+      assert length(page.entries) == 5
+      assert page.page_size == 5
+      assert page.page_number == 1
+      assert page.total_entries == 7
+      assert page.total_pages == 2
+    end
+
     test "can specify prefix" do
       create_users(6, "tenant_1")
       create_users(2, "tenant_2")

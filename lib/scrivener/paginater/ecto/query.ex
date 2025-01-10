@@ -17,7 +17,7 @@ defimpl Scrivener.Paginater, for: Ecto.Query do
       options
       |> Keyword.put_new(:caller, caller)
       |> Keyword.get_lazy(:total_entries, fn ->
-        aggregate(query, repo, options)
+        aggregate(%{query | select: nil}, repo, options)
       end)
 
     total_pages = total_pages(total_entries, page_size)
